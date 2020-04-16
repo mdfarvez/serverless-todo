@@ -55,9 +55,9 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
   const jwt: Jwt = decode(token, { complete: true }) as Jwt
 
-  const secret = await getSecret(jwt.header.kid, jwksUrl)
+  const key = await getSecret(jwt.header.kid, jwksUrl)
 
-  return verify(token, secret, { algorithms: ['RS256'] }) as JwtPayload
+  return verify(token, key.publicKey, { algorithms: ['RS256'] }) as JwtPayload
 }
 
 function getToken(authHeader: string): string {
@@ -72,7 +72,7 @@ function getToken(authHeader: string): string {
   return token
 }
 
-async function getSecret(kid: string, jwksUrl: string): Promise<string> {
+async function getSecret(kid: string, jwksUrl: string): Promise<any> {
   const jwtObj = await Axios.get(jwksUrl)
 
   const keys = jwtObj.data.keys
