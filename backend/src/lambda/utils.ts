@@ -14,3 +14,16 @@ export function getUserId(event: APIGatewayProxyEvent): string {
 
   return parseUserId(jwtToken)
 }
+
+/** 
+ * Generate a Auth0 certificate
+ * @param cert base64 code by a get req using auth0 json endpoint
+ * 
+ * @returns a Auth0 RS256 certificate
+ */
+export function certToPEM(cert: any) {
+  cert = cert.match(/.{1,64}/g).join('\n')
+  cert = `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----\n`
+
+  return cert
+}

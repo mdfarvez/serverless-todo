@@ -1,15 +1,16 @@
 import { CustomAuthorizerEvent, CustomAuthorizerResult } from 'aws-lambda'
 import 'source-map-support/register'
+import Axios from 'axios'
 
 import { verify, decode } from 'jsonwebtoken'
 import { createLogger } from '../../utils/logger'
-import Axios from 'axios'
 import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
+import { certToPEM } from '../utils'
 
 const logger = createLogger('auth')
 
-const jwksUrl = 'https://mdfarvez.eu.auth0.com/.well-known/jwks.json'
+const jwksUrl = process.env.JWKS_URL
 
 export const handler = async (
   event: CustomAuthorizerEvent
@@ -57,6 +58,8 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
 
   const key = await getSecret(jwt.header.kid, jwksUrl)
 
+  logger.info('Verifing user Token')
+
   return verify(token, key.publicKey, { algorithms: ['RS256'] }) as JwtPayload
 }
 
@@ -95,11 +98,4 @@ async function getSecret(kid: string, jwksUrl: string): Promise<any> {
 
   logger.info("Signing keys created successfully ", signingKey)
   return signingKey
-}
-
-
-function certToPEM(cert: any) {
-  cert = cert.match(/.{1,64}/g).join('\n');
-  cert = `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----\n`;
-  return cert
 }
