@@ -4,7 +4,7 @@ import * as AWS from "aws-sdk"
 import { getUserId } from '../utils'
 
 const todosTable = process.env.TODOS_TABLE
-const userIndex = process.env.TODO_INDEX
+const todoIndex = process.env.TODO_INDEX
 const docClient = new AWS.DynamoDB.DocumentClient()
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const result = await docClient
     .query({
       TableName: todosTable,
-      IndexName: userIndex,
+      IndexName: todoIndex,
       KeyConditionExpression: 'userId = :id',
       ExpressionAttributeValues: {
         ':id': userId
