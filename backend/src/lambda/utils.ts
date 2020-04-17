@@ -1,5 +1,8 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { parseUserId } from "../auth/utils";
+import { createLogger } from "../utils/logger";
+
+const logger = createLogger('auth')
 
 /**
  * Get a user id from an API Gateway event
@@ -11,6 +14,8 @@ export function getUserId(event: APIGatewayProxyEvent): string {
   const authorization = event.headers.Authorization
   const split = authorization.split(' ')
   const jwtToken = split[1]
+  
+  logger.info('Getting userId from event')
 
   return parseUserId(jwtToken)
 }
@@ -24,6 +29,8 @@ export function getUserId(event: APIGatewayProxyEvent): string {
 export function certToPEM(cert: any) {
   cert = cert.match(/.{1,64}/g).join('\n')
   cert = `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----\n`
+
+  logger.info('Created Auth0 Certificate from base64 public key')
 
   return cert
 }

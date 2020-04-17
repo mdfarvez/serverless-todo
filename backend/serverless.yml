@@ -21,6 +21,18 @@ provider:
     TODO_S3_BUCKET: image-mds-bucket-abs789-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
     JWKS_URL: https://mdfarvez.eu.auth0.com/.well-known/jwks.json
+  
+  # enable AWS X-Ray Tracing
+  tracing:
+    lambda: true
+    apiGateway: true
+    iamRoleStatements:
+      - Effect: 'Allow' # xray permissions (required)
+        Action:
+          - 'xray:PutTraceSegments'
+          - 'xray:PutTelemetryRecords'
+        Resource:
+          - '*'
 
 functions:
 
