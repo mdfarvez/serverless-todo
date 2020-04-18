@@ -20,7 +20,7 @@ provider:
     TODO_INDEX: UserIdIndex
     TODO_S3_BUCKET: image-mds-bucket-abs789-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    JWKS_URL: https://mdfarvez.eu.auth0.com/.well-known/jwks.json
+    JWKS_URL: '' # JWKS json endpint URL
   
   # enable AWS X-Ray Tracing
   tracing:
